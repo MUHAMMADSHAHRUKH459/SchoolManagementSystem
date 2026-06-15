@@ -1,0 +1,266 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────
+// AUTH
+// ─────────────────────────────────────────
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String
+  role      UserRole @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserRole {
+  ADMIN
+  SUPER_ADMIN
+}
+
+// ─────────────────────────────────────────
+// STUDENTS
+// ─────────────────────────────────────────
+
+model Student {
+  id            String   @id @default(cuid())
+  rollNo        String   @unique
+  firstName     String
+  lastName      String
+  fatherName    String
+  motherName    String
+  dateOfBirth   DateTime
+  gender        Gender
+  phone         String?
+  email         String?
+  address       String?
+  class         String
+  section       String
+  admissionDate DateTime @default(now())
+  admissionNo   String   @unique
+  status        Status   @default(ACTIVE)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  fees       Fee[]
+  attendance StudentAttendance[]
+}
+
+// ─────────────────────────────────────────
+// TEACHERS
+// ─────────────────────────────────────────
+
+model Teacher {
+  id            String   @id @default(cuid())
+  employeeId    String   @unique
+  firstName     String
+  lastName      String
+  email         String   @unique
+  phone         String
+  address       String?
+  gender        Gender
+  dateOfBirth   DateTime
+  joiningDate   DateTime @default(now())
+  qualification String?
+  salary        Decimal  @db.Decimal(10, 2)
+  status        Status   @default(ACTIVE)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  subjects   TeacherSubject[]
+  salaries   Salary[]
+  attendance TeacherAttendance[]
+}
+
+model Subject {
+  id       String           @id @default(cuid())
+  name     String           @unique
+  code     String           @unique
+  teachers TeacherSubject[]
+}
+
+model TeacherSubject {
+  teacher   Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  teacherId String
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  subjectId String
+
+  @@id([teacherId, subjectId])
+}
+
+// ─────────────────────────────────────────
+// STAFF
+// ─────────────────────────────────────────
+
+model Staff {
+  id          String    @id @default(cuid())
+  employeeId  String    @unique
+  firstName   String
+  lastName    String
+  email       String?
+  phone       String
+  address     String?
+  gender      Gender
+  role        StaffRole
+  salary      Decimal   @db.Decimal(10, 2)
+  joiningDate DateTime  @default(now())
+  status      Status    @default(ACTIVE)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  salaries   Salary[]
+  attendance StaffAttendance[]
+}
+
+// ─────────────────────────────────────────
+// FEES
+// ─────────────────────────────────────────
+
+model Fee {
+  id          String    @id @default(cuid())
+  receiptNo   String    @unique @default(cuid())
+  studentId   String
+  month       Int
+  year        Int
+  amount      Decimal   @db.Decimal(10, 2)
+  discount    Decimal   @default(0) @db.Decimal(10, 2)
+  lateFine    Decimal   @default(0) @db.Decimal(10, 2)
+  totalAmount Decimal   @db.Decimal(10, 2)
+  paidAmount  Decimal   @default(0) @db.Decimal(10, 2)
+  dueAmount   Decimal   @db.Decimal(10, 2)
+  status      FeeStatus @default(UNPAID)
+  paidAt      DateTime?
+  remarks     String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, month, year])
+}
+
+// ─────────────────────────────────────────
+// SALARY
+// ─────────────────────────────────────────
+
+model Salary {
+  id          String       @id @default(cuid())
+  month       Int
+  year        Int
+  basicSalary Decimal      @db.Decimal(10, 2)
+  deductions  Decimal      @default(0) @db.Decimal(10, 2)
+  advance     Decimal      @default(0) @db.Decimal(10, 2)
+  bonus       Decimal      @default(0) @db.Decimal(10, 2)
+  netSalary   Decimal      @db.Decimal(10, 2)
+  status      SalaryStatus @default(UNPAID)
+  paidAt      DateTime?
+  remarks     String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  teacherId String?
+  staffId   String?
+
+  teacher Teacher? @relation(fields: [teacherId], references: [id])
+  staff   Staff?   @relation(fields: [staffId], references: [id])
+
+  @@unique([teacherId, month, year])
+  @@unique([staffId, month, year])
+}
+
+// ─────────────────────────────────────────
+// ATTENDANCE
+// ─────────────────────────────────────────
+
+model StudentAttendance {
+  id        String           @id @default(cuid())
+  studentId String
+  date      DateTime         @db.Date
+  status    AttendanceStatus
+  remarks   String?
+  createdAt DateTime         @default(now())
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, date])
+}
+
+model TeacherAttendance {
+  id        String           @id @default(cuid())
+  teacherId String
+  date      DateTime         @db.Date
+  status    AttendanceStatus
+  remarks   String?
+  createdAt DateTime         @default(now())
+
+  teacher Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+
+  @@unique([teacherId, date])
+}
+
+model StaffAttendance {
+  id        String           @id @default(cuid())
+  staffId   String
+  date      DateTime         @db.Date
+  status    AttendanceStatus
+  remarks   String?
+  createdAt DateTime         @default(now())
+
+  staff Staff @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@unique([staffId, date])
+}
+
+// ─────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum StaffRole {
+  PEON
+  SWEEPER
+  GARDENER
+  ELECTRICIAN
+  LIBRARIAN
+  SECURITY
+  OTHER
+}
+
+enum FeeStatus {
+  PAID
+  UNPAID
+  PARTIAL
+  WAIVED
+}
+
+enum SalaryStatus {
+  PAID
+  UNPAID
+  PARTIAL
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  HALF_DAY
+  HOLIDAY
+}
