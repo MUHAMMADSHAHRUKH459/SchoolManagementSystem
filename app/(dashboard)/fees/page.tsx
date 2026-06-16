@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { FeeTableClient } from "./FeeTableClient";
-import { FeeWithStudent } from "@/types";
-import { Fee } from "@prisma/client";
+import { FeeWithStudent, FeeStatus } from "@/types";
 
 export default async function FeesPage() {
   const fees = await prisma.fee.findMany({
@@ -25,8 +24,8 @@ export default async function FeesPage() {
     orderBy: { createdAt: "desc" },
   });
 
-  const unpaid = fees.filter((f: Fee) => f.status === "UNPAID").length;
-  const partial = fees.filter((f: Fee) => f.status === "PARTIAL").length;
+  const unpaid = fees.filter((f: { status: FeeStatus }) => f.status === "UNPAID").length;
+  const partial = fees.filter((f: { status: FeeStatus }) => f.status === "PARTIAL").length;
 
   return (
     <div>
