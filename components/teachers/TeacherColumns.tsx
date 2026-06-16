@@ -10,30 +10,33 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-interface TeacherSubject {
-  subject: {
-    id: string;
-    name: string;
-  };
+interface SubjectEntry {
+  subject: { id: string; name: string };
 }
 
-export interface Teacher {
+interface TeacherMember {
   id: string;
   employeeId: string;
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
-  salary: string;
+  address?: string | null;
+  gender: string;
+  dateOfBirth: Date;
+  joiningDate: Date;
+  qualification?: string | null;
+  salary: number;
   status: string;
-  subjects?: TeacherSubject[];
+  subjects: SubjectEntry[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-function ActionCell({ teacher }: { teacher: Teacher }) {
+function ActionCell({ teacher }: { teacher: TeacherMember }) {
   const router = useRouter();
 
   const handleDelete = async () => {
@@ -55,15 +58,11 @@ function ActionCell({ teacher }: { teacher: Teacher }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem>
-          <Link href={`/teachers/${teacher.id}`} className="flex w-full items-center gap-2">
-            <Eye className="mr-2 h-4 w-4" /> View
-          </Link>
+        <DropdownMenuItem onClick={() => router.push(`/teachers/${teacher.id}`)}>
+          <Eye className="mr-2 h-4 w-4" /> View
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href={`/teachers/${teacher.id}/edit`} className="flex w-full items-center gap-2">
-            <Pencil className="mr-2 h-4 w-4" /> Edit
-          </Link>
+        <DropdownMenuItem onClick={() => router.push(`/teachers/${teacher.id}/edit`)}>
+          <Pencil className="mr-2 h-4 w-4" /> Edit
         </DropdownMenuItem>
         <DropdownMenuItem
           className="text-destructive focus:text-destructive"
@@ -76,7 +75,7 @@ function ActionCell({ teacher }: { teacher: Teacher }) {
   );
 }
 
-export const teacherColumns: ColumnDef<Teacher>[] = [
+export const teacherColumns: ColumnDef<TeacherMember>[] = [
   {
     accessorKey: "employeeId",
     header: "Emp. ID",
@@ -111,9 +110,9 @@ export const teacherColumns: ColumnDef<Teacher>[] = [
             {ts.subject.name}
           </Badge>
         ))}
-        {(row.original.subjects?.length ?? 0) > 2 && (
+        {row.original.subjects?.length > 2 && (
           <Badge variant="outline" className="text-xs">
-            +{(row.original.subjects?.length ?? 0) - 2}
+            +{row.original.subjects.length - 2}
           </Badge>
         )}
       </div>
@@ -134,7 +133,11 @@ export const teacherColumns: ColumnDef<Teacher>[] = [
       return (
         <Badge
           variant={
-            status === "ACTIVE" ? "default" : status === "SUSPENDED" ? "destructive" : "secondary"
+            status === "ACTIVE"
+              ? "default"
+              : status === "SUSPENDED"
+              ? "destructive"
+              : "secondary"
           }
         >
           {status}

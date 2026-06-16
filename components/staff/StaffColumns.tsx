@@ -10,12 +10,27 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Staff, Status } from "@prisma/client";
 
-function ActionCell({ staff }: { staff: Staff }) {
+interface StaffMember {
+  id: string;
+  employeeId: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  role: string;
+  salary: number;
+  status: string;
+  email?: string | null;
+  address?: string | null;
+  gender: string;
+  joiningDate: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+function ActionCell({ staff }: { staff: StaffMember }) {
   const router = useRouter();
 
   const handleDelete = async () => {
@@ -54,7 +69,7 @@ function ActionCell({ staff }: { staff: Staff }) {
   );
 }
 
-export const staffColumns: ColumnDef<Staff>[] = [
+export const staffColumns: ColumnDef<StaffMember>[] = [
   {
     accessorKey: "employeeId",
     header: "Emp. ID",
@@ -98,7 +113,7 @@ export const staffColumns: ColumnDef<Staff>[] = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
-      const status = row.getValue<Status>("status");
+      const status = row.getValue<string>("status");
       return (
         <Badge
           variant={

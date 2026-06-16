@@ -1,7 +1,6 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { StudentType } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,18 +10,36 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-function ActionCell({ student }: { student: StudentType }) {
+interface StudentMember {
+  id: string;
+  rollNo: string;
+  firstName: string;
+  lastName: string;
+  fatherName: string;
+  motherName: string;
+  dateOfBirth: Date;
+  gender: string;
+  phone?: string | null;
+  email?: string | null;
+  address?: string | null;
+  class: string;
+  section: string;
+  admissionDate: Date;
+  admissionNo: string;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+function ActionCell({ student }: { student: StudentMember }) {
   const router = useRouter();
 
   const handleDelete = async () => {
     if (!confirm("Delete this student? This cannot be undone.")) return;
-    const res = await fetch(`/api/students/${student.id}`, {
-      method: "DELETE",
-    });
+    const res = await fetch(`/api/students/${student.id}`, { method: "DELETE" });
     if (res.ok) {
       toast.success("Student deleted");
       router.refresh();
@@ -33,35 +50,30 @@ function ActionCell({ student }: { student: StudentType }) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-muted-foreground hover:bg-muted/80">
-        <MoreHorizontal className="h-4 w-4" />
+      <DropdownMenuTrigger>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem>
-          <Link href={`/students/${student.id}`} className="flex w-full items-center gap-2">
-            <Eye className="mr-2 h-4 w-4" />
-            View
-          </Link>
+        <DropdownMenuItem onClick={() => router.push(`/students/${student.id}`)}>
+          <Eye className="mr-2 h-4 w-4" /> View
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href={`/students/${student.id}/edit`} className="flex w-full items-center gap-2">
-            <Pencil className="mr-2 h-4 w-4" />
-            Edit
-          </Link>
+        <DropdownMenuItem onClick={() => router.push(`/students/${student.id}/edit`)}>
+          <Pencil className="mr-2 h-4 w-4" /> Edit
         </DropdownMenuItem>
         <DropdownMenuItem
           className="text-destructive focus:text-destructive"
           onClick={handleDelete}
         >
-          <Trash2 className="mr-2 h-4 w-4" />
-          Delete
+          <Trash2 className="mr-2 h-4 w-4" /> Delete
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 }
 
-export const studentColumns: ColumnDef<StudentType>[] = [
+export const studentColumns: ColumnDef<StudentMember>[] = [
   {
     accessorKey: "admissionNo",
     header: "Adm. No",
@@ -86,9 +98,7 @@ export const studentColumns: ColumnDef<StudentType>[] = [
     id: "class",
     header: "Class",
     cell: ({ row }) => (
-      <span>
-        Class {row.original.class} — {row.original.section}
-      </span>
+      <span>Class {row.original.class} — {row.original.section}</span>
     ),
   },
   {
