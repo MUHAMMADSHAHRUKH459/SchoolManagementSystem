@@ -181,3 +181,60 @@ export interface StaffAttendanceWithStaff extends AttendanceRecord {
     role: string;
   };
 }
+
+export interface StudentMember {
+  id: string;
+  rollNo: string;
+  firstName: string;
+  lastName: string;
+  fatherName: string;
+  motherName: string;
+  dateOfBirth: Date | string;
+  gender: string;
+  phone?: string | null;
+  email?: string | null;
+  address?: string | null;
+  class: string;
+  section: string;
+  admissionDate: Date | string;
+  admissionNo: string;
+  status: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}
+
+export interface TeacherMember {
+  id: string;
+  employeeId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address?: string | null;
+  gender: string;
+  dateOfBirth: Date | string;
+  joiningDate: Date | string;
+  qualification?: string | null;
+  salary: number;
+  status: string;
+  subjects: { subject: { id: string; name: string } }[];
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}
+
+export interface StaffMember {
+  id: string;
+  employeeId: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  role: string;
+  salary: number;
+  status: string;
+  email?: string | null;
+  address?: string | null;
+  gender: string;
+  joiningDate: Date | string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}

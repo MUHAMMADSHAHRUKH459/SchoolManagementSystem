@@ -12,29 +12,7 @@ import {
 import { MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
-interface SubjectEntry {
-  subject: { id: string; name: string };
-}
-
-interface TeacherMember {
-  id: string;
-  employeeId: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  address?: string | null;
-  gender: string;
-  dateOfBirth: Date;
-  joiningDate: Date;
-  qualification?: string | null;
-  salary: number;
-  status: string;
-  subjects: SubjectEntry[];
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { TeacherMember } from "@/types";
 
 function ActionCell({ teacher }: { teacher: TeacherMember }) {
   const router = useRouter();
@@ -131,15 +109,7 @@ export const teacherColumns: ColumnDef<TeacherMember>[] = [
     cell: ({ row }) => {
       const status = row.getValue<string>("status");
       return (
-        <Badge
-          variant={
-            status === "ACTIVE"
-              ? "default"
-              : status === "SUSPENDED"
-              ? "destructive"
-              : "secondary"
-          }
-        >
+        <Badge variant={status === "ACTIVE" ? "default" : status === "SUSPENDED" ? "destructive" : "secondary"}>
           {status}
         </Badge>
       );

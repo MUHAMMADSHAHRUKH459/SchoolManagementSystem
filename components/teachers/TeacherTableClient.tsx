@@ -5,29 +5,7 @@ import { DataTable } from "@/components/shared/DataTable";
 import { teacherColumns } from "@/components/teachers/TeacherColumns";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-
-interface SubjectEntry {
-  subject: { id: string; name: string };
-}
-
-interface TeacherMember {
-  id: string;
-  employeeId: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  address?: string | null;
-  gender: string;
-  dateOfBirth: Date;
-  joiningDate: Date;
-  qualification?: string | null;
-  salary: number;
-  status: string;
-  subjects: SubjectEntry[];
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { TeacherMember } from "@/types";
 
 export function TeacherTableClient({ teachers }: { teachers: TeacherMember[] }) {
   const [search, setSearch] = useState("");

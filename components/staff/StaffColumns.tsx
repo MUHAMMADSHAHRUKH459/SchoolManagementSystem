@@ -12,23 +12,7 @@ import {
 import { MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
-interface StaffMember {
-  id: string;
-  employeeId: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  role: string;
-  salary: number;
-  status: string;
-  email?: string | null;
-  address?: string | null;
-  gender: string;
-  joiningDate: Date;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { StaffMember } from "@/types";
 
 function ActionCell({ staff }: { staff: StaffMember }) {
   const router = useRouter();
@@ -115,15 +99,7 @@ export const staffColumns: ColumnDef<StaffMember>[] = [
     cell: ({ row }) => {
       const status = row.getValue<string>("status");
       return (
-        <Badge
-          variant={
-            status === "ACTIVE"
-              ? "default"
-              : status === "SUSPENDED"
-              ? "destructive"
-              : "secondary"
-          }
-        >
+        <Badge variant={status === "ACTIVE" ? "default" : status === "SUSPENDED" ? "destructive" : "secondary"}>
           {status}
         </Badge>
       );

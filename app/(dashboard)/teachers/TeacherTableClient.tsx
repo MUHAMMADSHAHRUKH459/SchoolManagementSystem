@@ -2,11 +2,34 @@
 
 import { useState, useMemo } from "react";
 import { DataTable } from "@/components/shared/DataTable";
-import { teacherColumns, type Teacher } from "@/components/teachers/TeacherColumns";
+import { teacherColumns } from "@/components/teachers/TeacherColumns";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 
-export function TeacherTableClient({ teachers }: { teachers: Teacher[] }) {
+interface SubjectEntry {
+  subject: { id: string; name: string };
+}
+
+interface TeacherMember {
+  id: string;
+  employeeId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address?: string | null;
+  gender: string;
+  dateOfBirth: Date | string;
+  joiningDate: Date | string;
+  qualification?: string | null;
+  salary: number;
+  status: string;
+  subjects: SubjectEntry[];
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}
+
+export function TeacherTableClient({ teachers }: { teachers: TeacherMember[] }) {
   const [search, setSearch] = useState("");
 
   const filtered = useMemo(() => {

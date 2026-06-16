@@ -5,27 +5,7 @@ import { DataTable } from "@/components/shared/DataTable";
 import { studentColumns } from "@/components/students/StudentColumns";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-
-interface StudentMember {
-  id: string;
-  rollNo: string;
-  firstName: string;
-  lastName: string;
-  fatherName: string;
-  motherName: string;
-  dateOfBirth: Date | string;
-  gender: string;
-  phone?: string | null;
-  email?: string | null;
-  address?: string | null;
-  class: string;
-  section: string;
-  admissionDate: Date | string;
-  admissionNo: string;
-  status: string;
-  createdAt: Date | string;
-  updatedAt: Date | string;
-}
+import { StudentMember } from "@/types";
 
 export function StudentTableClient({ students }: { students: StudentMember[] }) {
   const [search, setSearch] = useState("");

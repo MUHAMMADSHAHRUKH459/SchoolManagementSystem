@@ -5,23 +5,7 @@ import { DataTable } from "@/components/shared/DataTable";
 import { staffColumns } from "@/components/staff/StaffColumns";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-
-interface StaffMember {
-  id: string;
-  employeeId: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  role: string;
-  salary: number;
-  status: string;
-  email?: string | null;
-  address?: string | null;
-  gender: string;
-  joiningDate: Date;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { StaffMember } from "@/types";
 
 export function StaffTableClient({ staff }: { staff: StaffMember[] }) {
   const [search, setSearch] = useState("");

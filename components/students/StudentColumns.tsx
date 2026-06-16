@@ -12,27 +12,7 @@ import {
 import { MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
-interface StudentMember {
-  id: string;
-  rollNo: string;
-  firstName: string;
-  lastName: string;
-  fatherName: string;
-  motherName: string;
-  dateOfBirth: Date | string;
-  gender: string;
-  phone?: string | null;
-  email?: string | null;
-  address?: string | null;
-  class: string;
-  section: string;
-  admissionDate: Date | string;
-  admissionNo: string;
-  status: string;
-  createdAt: Date | string;
-  updatedAt: Date | string;
-}
+import { StudentMember } from "@/types";
 
 function ActionCell({ student }: { student: StudentMember }) {
   const router = useRouter();
@@ -120,15 +100,7 @@ export const studentColumns: ColumnDef<StudentMember>[] = [
     cell: ({ row }) => {
       const status = row.getValue<string>("status");
       return (
-        <Badge
-          variant={
-            status === "ACTIVE"
-              ? "default"
-              : status === "SUSPENDED"
-              ? "destructive"
-              : "secondary"
-          }
-        >
+        <Badge variant={status === "ACTIVE" ? "default" : status === "SUSPENDED" ? "destructive" : "secondary"}>
           {status}
         </Badge>
       );
