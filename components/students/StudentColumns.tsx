@@ -20,18 +20,18 @@ interface StudentMember {
   lastName: string;
   fatherName: string;
   motherName: string;
-  dateOfBirth: Date;
+  dateOfBirth: Date | string;
   gender: string;
   phone?: string | null;
   email?: string | null;
   address?: string | null;
   class: string;
   section: string;
-  admissionDate: Date;
+  admissionDate: Date | string;
   admissionNo: string;
   status: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }
 
 function ActionCell({ student }: { student: StudentMember }) {
