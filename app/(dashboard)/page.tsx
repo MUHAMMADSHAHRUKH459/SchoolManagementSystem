@@ -150,7 +150,7 @@ export default async function DashboardPage() {
                 No fee records this month
               </p>
             ) : (
-              recentFees.map((fee) => (
+              recentFees.map((fee: typeof recentFees[0]) => (
                 <div
                   key={fee.id}
                   className="flex items-center justify-between p-2.5 rounded-lg hover:bg-green-50/60 transition-all duration-150 group"
@@ -205,8 +205,7 @@ export default async function DashboardPage() {
                 No salary records this month
               </p>
             ) : (
-              recentSalaries.map((sal) => {
-                const person = sal.teacher ?? sal.staff;
+              recentSalaries.map((sal: typeof recentSalaries[0]) => {                const person = sal.teacher ?? sal.staff;
                 return (
                   <div
                     key={sal.id}
