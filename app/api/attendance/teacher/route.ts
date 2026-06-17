@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { AttendanceStatus } from "@prisma/client";
+import { AttendanceStatus } from "@/types";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -11,15 +11,16 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const date = searchParams.get("date");
 
-  const attendance = await prisma.teacherAttendance.findMany({
+  const attendance = await prisma.staffAttendance.findMany({
     where: date ? { date: new Date(date) } : {},
     include: {
-      teacher: {
+      staff: {
         select: {
           id: true,
           firstName: true,
           lastName: true,
           employeeId: true,
+          role: true,
         },
       },
     },
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const records = body.records as {
-      teacherId: string;
+      staffId: string;
       date: string;
       status: AttendanceStatus;
       remarks?: string;
@@ -44,10 +45,10 @@ export async function POST(req: NextRequest) {
 
     const results = await Promise.all(
       records.map((record) =>
-        prisma.teacherAttendance.upsert({
+        prisma.staffAttendance.upsert({
           where: {
-            teacherId_date: {
-              teacherId: record.teacherId,
+            staffId_date: {
+              staffId: record.staffId,
               date: new Date(record.date),
             },
           },
@@ -56,7 +57,7 @@ export async function POST(req: NextRequest) {
             remarks: record.remarks ?? null,
           },
           create: {
-            teacherId: record.teacherId,
+            staffId: record.staffId,
             date: new Date(record.date),
             status: record.status,
             remarks: record.remarks ?? null,
@@ -67,9 +68,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(results, { status: 201 });
   } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to save attendance" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to save attendance" }, { status: 500 });
   }
 }

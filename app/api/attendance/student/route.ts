@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { AttendanceStatus } from "@prisma/client";
+import { AttendanceStatus } from "@/types";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -14,9 +14,7 @@ export async function GET(req: NextRequest) {
 
   const where = {
     ...(date ? { date: new Date(date) } : {}),
-    ...(cls
-      ? { student: { class: cls } }
-      : {}),
+    ...(cls ? { student: { class: cls } } : {}),
   };
 
   const attendance = await prisma.studentAttendance.findMany({
@@ -77,9 +75,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(results, { status: 201 });
   } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to save attendance" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to save attendance" }, { status: 500 });
   }
 }

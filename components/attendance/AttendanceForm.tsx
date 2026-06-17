@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AttendanceStatus } from "@prisma/client";
+import { AttendanceStatus } from "@/types";
 import { AttendanceType } from "@/types";
 
 interface AttendanceRow {
