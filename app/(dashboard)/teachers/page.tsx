@@ -1,9 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { TeacherTableClient } from "./TeacherTableClient";
-import type { Teacher } from "@/components/teachers/TeacherColumns";
+import { TeacherMember } from "@/types";
 
 export default async function TeachersPage() {
   const teachers = await prisma.teacher.findMany({
@@ -11,27 +12,20 @@ export default async function TeachersPage() {
     orderBy: { createdAt: "desc" },
   });
 
-  const normalizedTeachers: Teacher[] = teachers.map((teacher) => ({
-    ...teacher,
-    salary: teacher.salary.toString(),
-  }));
-
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between gap-4">
-        <PageHeader
-          title="Teachers"
-          description={`${teachers.length} total teachers`}
-        />
-        <Link
-          href="/teachers/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
-        >
-          <Plus className="h-4 w-4" />
-          Add Teacher
-        </Link>
-      </div>
-      <TeacherTableClient teachers={normalizedTeachers} />
+      <PageHeader
+        title="Teachers"
+        description={`${teachers.length} total teachers`}
+      >
+        <Button asChild>
+          <Link href="/teachers/new">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Teacher
+          </Link>
+        </Button>
+      </PageHeader>
+      <TeacherTableClient teachers={teachers as unknown as TeacherMember[]} />
     </div>
   );
 }
